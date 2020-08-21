@@ -25,10 +25,11 @@ import com.example.tacocloud.Models.Ingredient;
 @Controller
 @RequestMapping("/design")
 public class DesignTacoController {
-    @GetMapping
-    public String showDesignForm(Model model) {
-        List<Ingredient> ingredients = Arrays.asList (
-                new Ingredient("FLTO", "Flour Tortilla", Type.WRAP) ,
+
+    @ModelAttribute
+    public void addIngredientsToModel(Model model) {
+        List<Ingredient> ingredients = Arrays.asList(
+                new Ingredient("FLTO", "Flour Tortilla", Type.WRAP),
                 new Ingredient("COTO", "Corn Tortilla", Type.WRAP),
                 new Ingredient("GRBF", "Ground Beef", Type.PROTEIN),
                 new Ingredient("CARN", "Carnitas", Type.PROTEIN),
@@ -45,6 +46,10 @@ public class DesignTacoController {
             model.addAttribute(type.toString().toLowerCase(),
                     filterByType(ingredients, type));
         }
+    }
+
+    @GetMapping
+    public String showDesignForm(Model model) {
         model.addAttribute("design", new Taco());
         return "design";
     }
