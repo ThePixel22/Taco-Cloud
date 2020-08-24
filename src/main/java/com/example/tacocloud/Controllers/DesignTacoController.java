@@ -3,6 +3,7 @@ package com.example.tacocloud.Controllers;
 
 
 import com.example.tacocloud.Data.IngredientRepository;
+import com.example.tacocloud.Data.TacoRepository;
 import com.example.tacocloud.Models.Taco;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,9 +32,12 @@ public class DesignTacoController {
 
     private final IngredientRepository ingredientRepository;
 
+    private TacoRepository tacoRepository;
+
     @Autowired
-    public  DesignTacoController (IngredientRepository ingredientRepository){
+    public  DesignTacoController (IngredientRepository ingredientRepository, TacoRepository tacoRepository){
         this.ingredientRepository = ingredientRepository;
+        this.tacoRepository = tacoRepository;
     }
 
     @ModelAttribute(name = "taco")
@@ -59,6 +63,7 @@ public class DesignTacoController {
             return "design";
         }
         //Save the taco design....
+        Taco saved = tacoRepository.save(design);
         log.info("Processing design: " + design);
         return "redirect:/orders/current";
     }
