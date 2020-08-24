@@ -1,8 +1,6 @@
 package com.example.tacocloud.Data;
 
-import com.example.tacocloud.Models.Ingredient;
 import com.example.tacocloud.Models.Taco;
-import org.springframework.boot.autoconfigure.integration.IntegrationProperties;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.PreparedStatementCreatorFactory;
@@ -42,10 +40,14 @@ public class JdbcTacoRepository implements TacoRepository {
     }
 
     private long saveTacoInfo(Taco taco) {
+
         taco.setCreateAt(new Date());
-        PreparedStatementCreator preparedStatementCreator = new PreparedStatementCreatorFactory(
+        PreparedStatementCreatorFactory preparedStatementCreatorFactory = new PreparedStatementCreatorFactory(
                 "insert into Taco (name, create_At) values  (?,?)",
-                Types.VARCHAR, Types.TIMESTAMP)
+                Types.VARCHAR, Types.TIMESTAMP);
+        preparedStatementCreatorFactory.setReturnGeneratedKeys(true);
+        PreparedStatementCreator preparedStatementCreator =
+                preparedStatementCreatorFactory
                 .newPreparedStatementCreator(Arrays.asList(taco.getName(),
                 new Timestamp(taco.getCreateAt().getTime())));
         KeyHolder keyHolder = new GeneratedKeyHolder();
