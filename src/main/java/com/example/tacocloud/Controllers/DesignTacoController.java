@@ -4,15 +4,13 @@ package com.example.tacocloud.Controllers;
 
 import com.example.tacocloud.Data.IngredientRepository;
 import com.example.tacocloud.Data.TacoRepository;
+import com.example.tacocloud.Models.Order;
 import com.example.tacocloud.Models.Taco;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,6 +26,7 @@ import com.example.tacocloud.Models.Ingredient;
 @Slf4j
 @Controller
 @RequestMapping("/design")
+@SessionAttributes("order")
 public class DesignTacoController {
 
     private final IngredientRepository ingredientRepository;
@@ -38,6 +37,11 @@ public class DesignTacoController {
     public  DesignTacoController (IngredientRepository ingredientRepository, TacoRepository tacoRepository){
         this.ingredientRepository = ingredientRepository;
         this.tacoRepository = tacoRepository;
+    }
+
+    @ModelAttribute(name = "order")
+    public Order order() {
+        return new Order();
     }
 
     @ModelAttribute(name = "taco")
@@ -58,12 +62,13 @@ public class DesignTacoController {
     }
 
     @PostMapping
-    public String processDesign(@Valid Taco design, Errors errors){
+    public String processDesign(@Valid Taco design, Errors errors,@ModelAttribute Order order){
         if(errors.hasErrors()){
             return "design";
         }
         //Save the taco design....
         Taco saved = tacoRepository.save(design);
+        order.addDesign(saved);
         log.info("Processing design: " + design);
         return "redirect:/orders/current";
     }
