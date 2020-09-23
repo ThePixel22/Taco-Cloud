@@ -29,11 +29,17 @@ import com.example.tacocloud.Models.Ingredient;
 @SessionAttributes("order")
 public class DesignTacoController {
 
-    @Autowired
     private IngredientRepository ingredientRepository;
 
-    @Autowired
     private TacoRepository tacoRepository;
+
+    @Autowired
+    public DesignTacoController(
+            IngredientRepository ingredientRepo,
+            TacoRepository tacoRepo) {
+        this.ingredientRepository = ingredientRepo;
+        this.tacoRepository = tacoRepo;
+    }
 
     @ModelAttribute(name = "order")
     public Order order() {
@@ -49,11 +55,13 @@ public class DesignTacoController {
     public String showDesignForm(Model model) {
         List<Ingredient> ingredients = new ArrayList<>();
         ingredientRepository.findAll().forEach(i -> ingredients.add(i));
+
         Type[] types = Ingredient.Type.values();
         for (Type type : types) {
             model.addAttribute(type.toString().toLowerCase(),
                     filterByType(ingredients, type));
         }
+
         return "design";
     }
 
